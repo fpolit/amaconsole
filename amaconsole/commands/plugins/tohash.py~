@@ -1,0 +1,21 @@
+#!/usr/bin/env python3
+#
+# to hash commands
+
+from cmd2 import (
+    Cmd,
+    CommandSet,
+    with_default_category,
+    with_argparser,
+    Cmd2ArgumentParser
+)
+from ama import CUPP_CONFIG_FILE
+from ama.commands import CommandCategory
+from ama.plugins import Cupp as CuppPlugin
+
+
+@with_default_category(CommandCategory.PLUGIN)
+class Cupp(CommandSet):
+    """
+    cupp plugin - entry point
+    """

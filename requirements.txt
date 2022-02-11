@@ -1,0 +1,8 @@
+cmd2
+mpi4py
+tabulate
+colorama
+psutil
+#name-that-hash
+#search-that-hash
+#random-password-generator
