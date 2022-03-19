@@ -1,0 +1,9 @@
+[submodule "amaconsole/plugins/hashcat"]
+	path = amaconsole/plugins/hashcat
+	url = https://github.com/hashcat/hashcat.git
+[submodule "amaconsole/plugins/hashID"]
+	path = amaconsole/plugins/hashID
+	url = https://github.com/fpolit/hashID.git
+[submodule "amaconsole/plugins/john"]
+	path = amaconsole/plugins/john
+	url = https://github.com/openwall/john.git

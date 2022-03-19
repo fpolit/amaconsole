@@ -8,9 +8,8 @@ import random
 from colorama import Fore, Style
 from typing import List
 
-from ama import VERSION
-from ama.utils import color
-from ama.manager.module_pool import ModulePool
+from amaconsole import VERSION
+from amaconsole.utils import color
 
 
 class BannerGenerator:
@@ -21,7 +20,7 @@ class BannerGenerator:
     ama_version: str
     banners: List[str]
     tips: List[str]
-    module_pool: ModulePool
+    #module_pool: ModulePool
 
     _instance: BannerGenerator = None
 

@@ -7,7 +7,7 @@ from setuptools import setup, find_packages
 setup(
     name='amaconsole',
     version='1.0',
-    description='Ama-Framework console',
+    description='Ama console',
     long_description_content_type='text/markdown',
     keywords=['Password Cracking', ],
     author='glozanoa',
@@ -24,7 +24,7 @@ setup(
     packages=find_packages(),
     entry_points={
         'console_scripts':[
-            'amaconsole = ama.ama:main',
+            'amaconsole = amaconsole.main:run',
         ],
     }
 )

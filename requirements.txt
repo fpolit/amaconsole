@@ -1,8 +1,10 @@
 cmd2
-mpi4py
-tabulate
-colorama
-psutil
+grpcio
+grpcio-tools
+#tabulate
+#colorama
+#psutil
 #name-that-hash
 #search-that-hash
 #random-password-generator
+colorama
