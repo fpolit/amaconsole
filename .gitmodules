@@ -7,3 +7,9 @@
 [submodule "amaconsole/plugins/john"]
 	path = amaconsole/plugins/john
 	url = https://github.com/openwall/john.git
+[submodule "amaproto"]
+	path = libs/amaproto
+	url = https://github.com/fpolit/amaproto.git
+[submodule "libs/amacore"]
+	path = libs/amacore
+	url = https://github.com/fpolit/amacore.git

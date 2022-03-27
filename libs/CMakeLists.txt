@@ -1,0 +1,2 @@
+include_directories(amacore)
+include_directories(amaproto)
