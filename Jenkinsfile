@@ -29,8 +29,6 @@ pipeline{
         stage('Install'){
             steps {
                 sh 'id'
-                sh 'cat /etc/passwd'
-                sh 'cat /etc/shadow'
                 sh 'sudo make -C build install'
             }
         }
