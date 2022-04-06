@@ -28,8 +28,8 @@ pipeline{
         }
         stage('Install'){
             steps {
-                sh 'id && whoami'
-                sh 'make -C build install'
+                sh 'id'
+                sh 'sudo make -C build install'
             }
         }
 
