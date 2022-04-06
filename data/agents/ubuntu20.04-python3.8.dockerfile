@@ -6,7 +6,6 @@ RUN apt -y install python3-setuptools make cmake sudo # build dependencies
 
 RUN useradd -m -u 970 jenkins && echo "jenkins:jenkins" | chpasswd
 RUN echo "jenkins ALL=(root) NOPASSWD: $(which make)" >> /etc/sudoers
-RUN cat -n /etc/sudoers
 RUN visudo --check
-RUN cat /etc/passwd /etc/shadow
+
 USER jenkins
