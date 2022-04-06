@@ -1,8 +1,2 @@
-from pathlib import Path
-
-VERSION='@PROJECT_VERSION@'
-AMACONSOLE_HOME= Path.joinpath(Path.home(), '.amaconsole')
-HISTORY_FILE = AMACONSOLE_HOME.joinpath('console.dat')
-CONFIG_FILE = AMACONSOLE_HOME.joinpath('amaconsole.json')
-LOG_FILE = AMACONSOLE_HOME.joinpath('amaconsole.log')
+AMACONSOLE_VERSION='@PROJECT_VERSION@'
 PROMPT = 'ama > '

@@ -1,0 +1,18 @@
+AMACONSOLE EXTENSIONS - COMMANDS
+================================
+
+All python script defining new commands for amaconsole will be imported automatically from AMACONSOLE_HOME/extensions.
+
+EXAMPLES
+--------
+
+Here you can find some examples of how to extend amaconsole with your custom commands.
+
+
+* Simple commands :  AMACONSOLE_REPO/data/extensions/SimpleCommands.py
+
+
+NOTE: You can find more examples in AMACONSOLE_REPO/amaconsole/commands
+
+
+For more detail check cmd2 documentation: https://cmd2.readthedocs.io/en/latest/features/modular_commands.html

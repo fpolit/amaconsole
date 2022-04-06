@@ -4,6 +4,10 @@
 
 from setuptools import setup, find_packages
 
+pkgs = find_packages(where='@CMAKE_CURRENT_SOURCE_DIR@')
+
+print(f"AMACONSOLE_PKGS: {pkgs}")
+
 setup(
     name='amaconsole',
     version='@PROJECT_VERSION@',
@@ -21,10 +25,11 @@ setup(
         "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10"
     ],
-    packages=find_packages(),
+    packages=pkgs,
+    package_dir={'': '@CMAKE_CURRENT_SOURCE_DIR@'},
     entry_points={
         'console_scripts':[
-            'amaconsole = amaconsole.main:run',
-        ],
+            'amaconsole=amaconsole.run:main',
+        ]
     }
 )

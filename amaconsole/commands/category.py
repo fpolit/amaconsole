@@ -14,10 +14,9 @@ class CommandCategory:
     UTILITIES = "Utilities"
     MODULE = "Module Commands"
     SESSION = "Session Commands"
-    #SCHEDULER = "Scheduler Commands"
     #DB = "Database Commands"
-    #SLURM = "Slurm Commands"
     #PLUGIN = "Plugin Commands"
     #HCUTILS = "Hashcat Utils"
     TOHASH = "To Hash"
-    RESMAN = 'Resource Manager Commands'
+    RESMAN = "Resource Manager Commands"
+    BGPROCESS = "Background Process"

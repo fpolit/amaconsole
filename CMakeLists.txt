@@ -1,10 +1,9 @@
 cmake_minimum_required(VERSION 3.5)
 
 project(amaconsole
-  VERSION 1.0.0
+  VERSION 1.0.2
   DESCRIPTION "Console to interact with Ama-Framework"
   HOMEPAGE_URL https://github.com/fpolit/amaconsole
-  LANGUAGES CXX Python
 )
 
 set (CMAKE_CXX_STANDARD 11)
@@ -12,15 +11,26 @@ set(PROJECT_LICENSE "GPLv3")
 # Without this, any build libraries automatically have names "lib{x}.so"
 set(CMAKE_SHARED_MODULE_PREFIX "")
 
+# options
+option(CMAKE_BUILD_TESTS  "Build unittest" OFF)
+option(GIT_SUBMODULE "Check submodules during build" ON)
+option(INIT_HOME "Initialize amaconsole home directory" ON)
+
 # Finding dependencies
 find_package(Python3  COMPONENTS Interpreter Development REQUIRED)
 find_package(Boost COMPONENTS python REQUIRED)
+
+## enviroment INFO
+message(DEBUG "PROJECT_VERSION: ${CMAKE_PROJECT_VERSION}")
+message(DEBUG "CMAKE_CURRENT_SOURCE_DIR: ${CMAKE_CURRENT_SOURCE_DIR}")
+message(DEBUG "CMAKE_CURRENT_BINARY_DIR: ${CMAKE_CURRENT_BINARY_DIR}")
+message(DEBUG "Python3_VERSION: ${Python3_VERSION}")
+message(DEBUG "Python3_EXECUTABLE: ${Python3_EXECUTABLE}")
 
 # Updating git submodules
 find_package(Git QUIET)
 if(GIT_FOUND AND EXISTS "${PROJECT_SOURCE_DIR}/.git")
   # Update submodules as needed
-  option(GIT_SUBMODULE "Check submodules during build" ON)
   if(GIT_SUBMODULE)
     message(STATUS "Submodule update")
     execute_process(COMMAND ${GIT_EXECUTABLE} submodule update --init --recursive
@@ -32,7 +42,7 @@ if(GIT_FOUND AND EXISTS "${PROJECT_SOURCE_DIR}/.git")
   endif()
 endif()
 
-# ama CXX extensions - name structure: ama_LIBNAME_ext.so
+# Python extensions (C/CXX) - name structure: ama_LIBNAME_ext.so
 
 # # Add a shared module - modules are intended to be imported at runtime.
 # # - This is where you add the source files
@@ -53,40 +63,53 @@ endif()
 
 
 ## INSTALLATION
-### python package (amaconsole)
-set(PYTHON_PKG_SOURCE_DIR, "${CMAKE_CURRENT_SOURCE_DIR}/amaconsole")
-set(PYTHON_PKG_BINARY_DIR, "${CMAKE_CURRENT_BINARY_DIR}/amaconsole")
+
+# Copy bin scripts to build directory
+#file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/bin/amaconsole.py DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+
+# python package (amaconsole)
+set(PYTHON_PKG_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/amaconsole")
 set(SETUP_PY_IN "${CMAKE_CURRENT_SOURCE_DIR}/setup.py.in")
 set(SETUP_PY    "${CMAKE_CURRENT_BINARY_DIR}/setup.py")
-set(INIT_PY_IN  "${PYTHON_CURRENT_PKG_DIR}/__init__.py.in")
-set(INIT_PY     "${PYTHON_PKG_BINARY_DIR}/__init__.py")
-set(OUTPUT      "${CMAKE_CURRENT_BINARY_DIR}/build/")
+set(INIT_PY_IN  "${PYTHON_PKG_SOURCE_DIR}/__init__.py.in")
+set(INIT_PY     "${PYTHON_PKG_SOURCE_DIR}/__init__.py")
+set(OUTPUT      "${CMAKE_CURRENT_BINARY_DIR}/build")
 set(TIMESTAMP   "${OUTPUT}/timestamp")
-set(REQUIREMENTS "${CMAKE_CURRENT_SOURCE_DIR}/requirements.txt")
+
+if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+  set(REQUIREMENTS "${CMAKE_CURRENT_SOURCE_DIR}/requirements-dev.txt")
+else()
+  set(REQUIREMENTS "${CMAKE_CURRENT_SOURCE_DIR}/requirements.txt")
+endif()
+
+message(DEBUG "PYTHON_PKG_SOURCE_DIR: ${PYTHON_PKG_SOURCE_DIR}")
+message(DEBUG "Python requirements: ${REQUIREMENTS}")
 
 configure_file(${SETUP_PY_IN} ${SETUP_PY})
 configure_file(${INIT_PY_IN} ${INIT_PY})
 
 add_custom_command(OUTPUT ${TIMESTAMP}
-	COMMAND python3 ${SETUP_PY} build
+	COMMAND ${Python3_EXECUTABLE} ${SETUP_PY} build
 	COMMAND ${CMAKE_COMMAND} -E touch ${TIMESTAMP})
 
 add_custom_target(target ALL DEPENDS ${TIMESTAMP})
-message(DEBUG "Installing python requirements")
-install(CODE "execute_process(COMMAND python3 -m pip install -r ${REQUIREMENTS})")
-message(DEBUG "Installing python package (amaconsole)")
-install(CODE "execute_process(COMMAND python3 ${SETUP_PY} install --verbose)")
+#install(CODE "message(INFO 'Installing python requirements')")
+install(CODE "execute_process(COMMAND ${Python3_EXECUTABLE} -m pip install -r ${REQUIREMENTS})")
+#install(CODE "message(INFO 'Installing python package (amaconsole - ${CMAKE_PROJECT_VERSION})')")
+install(CODE "execute_process(COMMAND ${Python3_EXECUTABLE} ${SETUP_PY} install --verbose)")
 
 # initialize amaconsole home directory
-set(AMACONSOLE_HOME, "$ENV{HOME}/.amaconsole")
-set(HOME_SCRIPT "${CMAKE_CURRENT_SOURCE_DIR}/home.py")
-message(DEBUG "Initilizing amaconsole home")
-install(CODE "execute_process(COMMAND python3 ${HOME_SCRIPT} -b ${AMACONSOLE_HOME})")
+if(INIT_HOME)
+  set(AMACONSOLE_HOME "$ENV{HOME}/.amaconsole")
+  set(HOME_SCRIPT "${CMAKE_CURRENT_SOURCE_DIR}/utils/home.py")
+  # message(INFO "Initilizing amaconsole home")
+  install(CODE "execute_process(COMMAND ${Python3_EXECUTABLE} ${HOME_SCRIPT} -b ${AMACONSOLE_HOME} -y)")
+endif()
 
-### CXX extensions
-message(DEBUG "Installing CXX extensions")
-#install(TARGETS hello_ext echo_ext
-#	LIBRARY DESTINATION lib)
-
-include_directories(tests)
-include_directories(libs)
+if(CMAKE_BUILD_TESTS)
+  enable_testing()
+  add_subdirectory(tests)
+  add_custom_target(pytest
+    COMMAND ${Python3_EXECUTABLE} -m pytest -v ${CMAKE_CURRENT_SOURCE_DIR}/tests)
+endif()
+#add_subdirectory(libs)

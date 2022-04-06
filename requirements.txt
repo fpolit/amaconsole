@@ -1,7 +1,7 @@
 cmd2
 grpcio
 grpcio-tools
-#tabulate
+tabulate
 #colorama
 #psutil
 #name-that-hash
