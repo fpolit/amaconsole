@@ -28,7 +28,7 @@ pipeline{
         }
         stage('Install'){
             steps {
-                sh 'make -C build install'
+                sh 'sudo make -C build install'
             }
         }
 
