@@ -1,6 +1,6 @@
 pipeline{
     environment {
-        CMAKE_LOG_LEVEL='DEBUG'
+        LOGLEVEL='DEBUG'
         CMAKE_COMPILER_WALL='ON'
         CMAKE_BUILD_TYPE='Debug'
         CMAKE_BUILD_TESTS='ON'
@@ -32,9 +32,12 @@ pipeline{
             }
         }
 
-        stage('Test') {
+        stage('Tests') {
             steps {
-                sh 'make -C build test'
+                sh '''
+                make -C build test
+                make -C build pytest
+                '''
             }
         }
     }
