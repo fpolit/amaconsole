@@ -21,7 +21,7 @@ pipeline{
                 cmake -S . -B build -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} \
                                     -DCMAKE_COMPILER_WALL=${CMAKE_COMPILER_WALL} \
                                     -DCMAKE_BUILD_TESTS= ${CMAKE_BUILD_TESTS}\
-                                    --log-level=${CMAKE_LOG_LEVEL} || exit 1
+                                    --log-level=${LOGLEVEL} || exit 1
                 make -C build
                 '''
             }
