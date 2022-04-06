@@ -2,7 +2,7 @@ FROM ubuntu:20.04
 
 RUN apt -y update && apt -y full-upgrade
 RUN apt -y install gcc g++ python3.8 python3.8-dev libboost-python-dev # required dependencies
-RUN apt -y install python3-setuptools make cmake sudo # build dependencies
+RUN apt -y install python3-setuptools python3-pip make cmake sudo # build dependencies
 
 RUN useradd -m -u 970 jenkins && echo "jenkins:jenkins" | chpasswd
 RUN echo "jenkins ALL=(root) NOPASSWD: $(which make)" >> /etc/sudoers
