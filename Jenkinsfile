@@ -28,7 +28,7 @@ pipeline{
         }
         stage('Install'){
             steps {
-                sh 'id'
+                sh 'id && whoami'
                 sh 'make -C build install'
             }
         }
