@@ -5,7 +5,7 @@ RUN apt -y install gcc g++ python3.8 python3.8-dev libboost-python-dev # require
 RUN apt -y install python3-setuptools make cmake sudo # build dependencies
 
 RUN useradd -m -u 970 jenkins && echo "jenkins:jenkins" | chpasswd
-RUN /bin/sh -c 'echo -e "jenkins\tALL=(root) NOPASSWD: $(which make)"' >> /etc/sudoers
+RUN echo "jenkins ALL=(root) NOPASSWD: $(which make)" >> /etc/sudoers
 RUN cat -n /etc/sudoers
 RUN visudo --check
 RUN cat /etc/passwd /etc/shadow
