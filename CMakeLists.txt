@@ -12,9 +12,20 @@ set(PROJECT_LICENSE "GPLv3")
 set(CMAKE_SHARED_MODULE_PREFIX "")
 
 # options
+option(CMAKE_COMPILER_WALL "Warning all" ON)
 option(CMAKE_BUILD_TESTS  "Build unittest" OFF)
 option(GIT_SUBMODULE "Check submodules during build" ON)
 option(INIT_HOME "Initialize amaconsole home directory" ON)
+
+if(${CMAKE_COMPILER_WALL})
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
+endif()
+
+if(${CMAKE_BUILD_TYPE} STREQUAL "Debug")
+  message(DEBUG "Adding -ggdb compiler flag")
+  set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -ggdb" CACHE STRING "gdb debug support" FORCE)
+endif()
+
 
 # Finding dependencies
 find_package(Python3  COMPONENTS Interpreter Development REQUIRED)
@@ -116,4 +127,4 @@ if(CMAKE_BUILD_TESTS)
   add_custom_target(pytest
     COMMAND ${Python3_EXECUTABLE} -m pytest -v ${CMAKE_CURRENT_SOURCE_DIR}/tests)
 endif()
-#add_subdirectory(libs)
+add_subdirectory(libs)
