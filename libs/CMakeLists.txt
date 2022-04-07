@@ -1,2 +1,2 @@
 add_subdirectory(amacore)
-add_subdirectory(amaproto)
+#add_subdirectory(amaproto)
