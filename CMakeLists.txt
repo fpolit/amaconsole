@@ -48,7 +48,7 @@ if(GIT_FOUND AND EXISTS "${PROJECT_SOURCE_DIR}/.git")
     option(GIT_UPDATE_SUBMODULES "Check submodules during build" ON)
     message(DEBUG "GIT_EXECUTABLE: ${GIT_EXECUTABLE}")
     if(GIT_UPDATE_SUBMODULES)
-    execute_process(COMMAND ${GIT_EXECUTABLE} submodule update --init --recursive
+      execute_process(COMMAND ${GIT_EXECUTABLE} submodule update --init --recursive
       WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
       RESULT_VARIABLE GIT_SUBMOD_RESULT)
     if(NOT GIT_SUBMOD_RESULT EQUAL "0")
@@ -127,4 +127,4 @@ if(CMAKE_BUILD_TESTS)
   add_custom_target(pytest
     COMMAND ${Python3_EXECUTABLE} -m pytest -v ${CMAKE_CURRENT_SOURCE_DIR}/tests)
 endif()
-add_subdirectory(libs)
+#add_subdirectory(libs)
