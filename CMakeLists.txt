@@ -43,11 +43,11 @@ message(DEBUG "Python3_VERSION: ${Python3_VERSION}")
 message(DEBUG "Python3_EXECUTABLE: ${Python3_EXECUTABLE}")
 
 # Updating git submodules
-if(GIT_UPDATE_SUBMODULES)
-  find_package(Git REQUIRED)
-  if(GIT_FOUND AND EXISTS "${PROJECT_SOURCE_DIR}/.git")
+find_package(Git)
+if(GIT_FOUND AND EXISTS "${PROJECT_SOURCE_DIR}/.git")
     # Update submodules as needed
-    message(STATUS "Submodule update")
+    message(DEBUG "GIT_EXECUTABLE: ${GIT_EXECUTABLE}")
+    if(GIT_UPDATE_SUBMODULES)
     execute_process(COMMAND ${GIT_EXECUTABLE} submodule update --init --recursive
       WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
       RESULT_VARIABLE GIT_SUBMOD_RESULT)
