@@ -14,7 +14,6 @@ set(CMAKE_SHARED_MODULE_PREFIX "")
 # options
 option(CMAKE_COMPILER_WALL "Warning all" ON)
 option(CMAKE_BUILD_TESTS  "Build unittest" OFF)
-option(GIT_UPDATE_SUBMODULES "Check submodules during build" ON)
 option(INIT_HOME "Initialize amaconsole home directory" ON)
 
 if(${CMAKE_COMPILER_WALL})
@@ -46,6 +45,7 @@ message(DEBUG "Python3_EXECUTABLE: ${Python3_EXECUTABLE}")
 find_package(Git)
 if(GIT_FOUND AND EXISTS "${PROJECT_SOURCE_DIR}/.git")
     # Update submodules as needed
+    option(GIT_UPDATE_SUBMODULES "Check submodules during build" ON)
     message(DEBUG "GIT_EXECUTABLE: ${GIT_EXECUTABLE}")
     if(GIT_UPDATE_SUBMODULES)
     execute_process(COMMAND ${GIT_EXECUTABLE} submodule update --init --recursive
