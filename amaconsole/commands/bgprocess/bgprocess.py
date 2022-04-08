@@ -2,13 +2,16 @@
 #
 # Background processes - commands
 
+import os
 import cmd2
 import argparse
 from cmd2 import with_argparser
 
 from amaconsole.commands import CommandCategory as Category
-from amaconsole.utils.misc import str2timedelta
 from amaconsole.processor import Process
+from amaconsole.utils.misc import str2timedelta
+from amaconsole.utils import Shell
+
 
 @cmd2.with_default_category(Category.BGPROCESS)
 class BGProcessCmds(cmd2.CommandSet):
@@ -35,7 +38,7 @@ class BGProcessCmds(cmd2.CommandSet):
     def do_process(self, ns: argparse.Namespace):
         handler = ns.cmd2_handler.get()
         if handler:
-            delay = str2timedelta(args.delay)
+            delay = str2timedelta(ns.delay)
             process = Process(
                 target=handler,
                 args=(ns,),
@@ -49,3 +52,22 @@ class BGProcessCmds(cmd2.CommandSet):
 
         else:
             self.do_help('process')
+
+
+    script_parser = cmd2.Cmd2ArgumentParser(
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter
+    )
+    script_parser.add_argument('filepath',
+                               completer=cmd2.Cmd.path_complete,
+                               help='Path of script file')
+    script_parser.add_argument('-b', '--binary-shell',
+                               dest='binary_shell',
+                               default='/bin/bash',
+                               help='Path to binary shell')
+    @cmd2.as_subcommand_to('process', 'script', script_parser)
+    def process_script(self , args):
+        if not os.path.isfile(args.filepath):
+            raise FileNotFoundError("Script {filepath} does not exist")
+
+        cmd = [args.binary_shell, args.filepath]
+        Shell.exec(cmd)

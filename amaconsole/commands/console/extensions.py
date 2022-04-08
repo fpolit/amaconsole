@@ -3,6 +3,7 @@
 # Commands to manipulate extensions
 
 import cmd2
+import argparse
 from cmd2 import with_argparser
 from tabulate import tabulate
 
@@ -33,7 +34,7 @@ class ExtensionsCommands(cmd2.CommandSet):
     load_parser = cmd2.Cmd2ArgumentParser()
     load_parser.add_argument('-I', '--include-dir',
                              dest='include_dir',
-                             complete=cmd2.Cmd.path_complete,
+                             completer=cmd2.Cmd.path_complete,
                              help='Base directory to load extensions')
     load_parser.add_argument('-v', '--verbose',
                              action='store_true',
@@ -46,8 +47,7 @@ class ExtensionsCommands(cmd2.CommandSet):
 
 
     unload_parser = cmd2.Cmd2ArgumentParser()
-    unload_parser.add_argument('name',
-                             dest='extname',
+    unload_parser.add_argument('extname',
                              help='Extension name')
     unload_parser.add_argument('-v', '--verbose',
                              action='store_true',

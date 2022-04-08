@@ -11,6 +11,7 @@ class CommandCategory:
     Category of ama-framework commands
     """
     CONSOLE = "Console Commands"
+    DEFAULT_CONSOLE = "Console Commands (default)"
     UTILITIES = "Utilities"
     MODULE = "Module Commands"
     SESSION = "Session Commands"

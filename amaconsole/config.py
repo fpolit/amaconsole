@@ -11,7 +11,9 @@ logparser.add_argument('--logformat',
                        default="[%(asctime)s] %(name)s - %(levelname)s - %(message)s",
                        help='Log format')
 logparser.add_argument('--loglevel',
-                       default='debug',
+                       default=10,
+                       choices=[10, 20, 30, 40, 50],
+                       type=int,
                        help='Log level')
 
 procparser = parser.add_argument_group(title='Background processes options')

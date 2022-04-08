@@ -7,11 +7,12 @@ import os
 #import json
 import argparse
 import logging
+import cmd2
+import configparser
 from cmd2 import Cmd
 from pathlib import Path
 from threading import Thread
-from typing import Dict, List
-from configparser import ConfigParser
+from typing import Dict, List, Any
 
 from amaconsole import PROMPT
 from amaconsole.commands import CommandCategory
@@ -22,7 +23,10 @@ from amaconsole.extensions import load_extensions
 
 # commands
 from amaconsole.commands.bgprocess import BGProcessCmds
-from amaconsole.commands.console import ExtensionsCommands
+from amaconsole.commands.console import (
+    ExtensionsCommands,
+    SimpleCmds
+)
 
 
 class AmaConsole(Cmd):
@@ -34,19 +38,19 @@ class AmaConsole(Cmd):
                  config_args: argparse.Namespace = None,
                  config_file: str = None,
                  **kwargs):
-        self.config: ConfigParser = ConfigParser()
+        self.config: Dict[str, Dict[str, Any]] = {}
         self.connection_args = {}
         self.init_config(config_args, config_file)
 
         super().__init__(allow_redirection=True,
-                         persistent_history_file=HISTORY_FILE, **kwargs)
+                         persistent_history_file=self.config['CONSOLE']['history_file'], **kwargs)
 
         self.default_to_shell = True
         self.debug = True
         self.intro = None
         self.prompt = PROMPT
         self.continuation_prompt = "> "
-        self.default_category = CommandCategory.CONSOLE
+        self.default_category = CommandCategory.DEFAULT_CONSOLE
         self.channel = None
         self.extensions: Dict[str, cmd2.CommandSet] = {}
 
@@ -55,6 +59,7 @@ class AmaConsole(Cmd):
 
         self.bg_processor: BGProcessor = None
         self.bg_processor_thread: Thread = None
+
 
         # preloop hooks
         self.register_preloop_hook(self.init_logger)
@@ -67,10 +72,10 @@ class AmaConsole(Cmd):
 
     def init_background_processor(self) -> None:
         self.bg_processor = BGProcessor(
-            logfile=self.config['LOGGING']['LOGFILE'],
-            max_active_processes=self.config['PROCESSES']['MAX_ACTIVE_PROCESSES'],
-            logformat=self.config['LOGGING']['LOGFORMAT'],
-            loglevel=logging.DEBUG
+            logfile=self.config['LOGGING']['logfile'],
+            max_active_processes=self.config['PROCESSES']['max_active_processes'],
+            logformat=self.config['LOGGING']['logformat'],
+            loglevel=self.config['LOGGING']['loglevel']
         )
 
         # start processor thread
@@ -84,14 +89,14 @@ class AmaConsole(Cmd):
     def init_custom_extensions(self) -> None:
         sdir: List[Path] = []
 
-        if amaconsole_extensions := self.config['DEFAULT']['AMACONSOLE_EXTENSIONS']:
+        if amaconsole_extensions := self.config['LOCATION']['amaconsole_extensions']:
             sdir.append(amaconsole_extensions)
 
-        if include_dir := self.config['INCLUDE_DIR']:
+        if include_dir := self.config['EXTRA'].get('include_dir'):
             sdir.append(include_dir)
 
         for basedir in sdir:
-            extensions = load_extensions(basedir, self.config['CONSOLE']['VERBOSE'])
+            extensions = load_extensions(basedir, self.config['CONSOLE']['verbose'])
             for ext in extensions:
                 self.register_extension(ext)
 
@@ -119,57 +124,64 @@ class AmaConsole(Cmd):
         """
         Override configurations of config_file (dafault configurations) with supplied config_args
         """
-        pass
-    #     try:
-    #         if not config_file:
-    #             # check if AMACONSOLE_CONFIGFILE variable was configured
-    #             config_file = os.getenv('AMACONSOLE_CONFIGFILE')
-    #             if not os.path.isfile(config_file):
-    #                     config_file=None
+        try:
+            if not config_file:
+                # check config file in home directory
+                config_file = os.path.join(os.environ['HOME'],
+                                               '.amaconsole/amaconsole.conf')
+                if not os.path.isfile(config_file):
+                    config_file=None
 
-    #             # check config file in home directory
-    #             if not config_file:
-    #                 config_file = os.path.join(os.environ['HOME'],
-    #                                            '.amaconsole/amaconsole.cfg')
-    #                 if not os.path.isfile(config_file):
-    #                     config_file=None
+                # check if AMACONSOLE_HOME variable was configured
+                amaconsole_home = os.getenv('AMACONSOLE_HOME')
+                if amaconsole_home:
+                    config_file = os.path.join(amaconsole_home, 'amaconsole.conf')
+                    if not os.path.isfile(config_file):
+                        config_file=None
 
-    #         if config_file:
-    #             self.config.read(config_file)
+            config_file_parser = configparser.ConfigParser(interpolation=None)
+            if config_file:
+                config_file_parser.read(config_file)
 
-    #         # DEFAULT section
-    #         #if config_file
-    #         if controller_port := config_args.controller_port:
-    #             self.config['DEFAULT']['CONTROLLER_PORT'] = controller_port
+            config_args = vars(config_args)
+            parsed_config_args = {k.replace('-', '_'): v for k, v in config_args.items() if v is not None}
 
-    #         if controller_data_port := config_args.controller_data_port:
-    #             self.config['DEFAULT']['CONTROLLER_DATA_PORT'] = controller_data_port
+            sections = config_file_parser.sections()
+            for section in sections:
+                self.config[section] = dict(config_file_parser.items(section))
+                print(f"([BEFORE]section: {section}) {self.config[section]}")
 
-    #         # LOGING section
-    #         if logfile := config_args.logfile:
-    #             self.config['LOGGING']['LOGFILE'] = logfile
+                tmp_parsed_config_args = parsed_config_args.copy()
+                for key in parsed_config_args:
+                    if key in self.config[section]:
+                        self.config[section][key] = tmp_parsed_config_args.pop(key)
 
-    #         if logformat := config_args.logformat:
-    #             self.config['LOGGING']['LOGFORMAT'] = logformat
+                parsed_config_args = tmp_parsed_config_args
 
-    #         if loglevel := config_args.loglevel:
-    #             self.config['LOGGING']['LOGLEVEL'] = loglevel
 
-    #         # PROCESSES section
-    #         if max_active_processes := config_args.max_active_processes:
-    #             self.config['PROCESSES']['MAX_ACTIVE_PROCESSES'] = max_active_processes
+                print(f"([AFTER]section: {section}) {self.config[section]}")
 
-    #         # CONSOLE section
-    #         if table_style :=
 
-    #     except Exception as error:
-    #         self.logger.exception(error)
+            self.config['EXTRA'] = parsed_config_args
+
+            if config_file:
+                self.config['EXTRA']['config_file'] = config_file
+
+            # casting values
+            self.config['CONTROLLER']['controller_port'] = int(self.config['CONTROLLER']['controller_port'])
+            self.config['CONTROLLER']['controller_data_port'] = int(self.config['CONTROLLER']['controller_data_port'])
+            self.config['LOGGING']['loglevel'] = int(self.config['LOGGING']['loglevel'])
+            self.config['PROCESSES']['max_active_processes'] = int(self.config['PROCESSES']['max_active_processes'])
+            self.config['PROCESSES']['max_queue_size'] = int(self.config['PROCESSES']['max_queue_size'])
+
+        except Exception as error:
+            print(error)
 
     def init_logger(self) -> None:
         self.logger = Logger(name=__file__,
-                             logformat=self.config['LOGGING']['LOGFORMAT'],
-                             loglevel=logging.DEBUG)
-        self.logger.add_file_handler(self.config['LOGGING']['LOGFILE'])
+                             logformat=self.config['LOGGING']['logformat'],
+                             level=self.config['LOGGING']['loglevel'])
+        self.logger.add_file_handler(self.config['LOGGING']['logfile'])
 
 
     def init_banner_generator(self) -> None:

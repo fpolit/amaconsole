@@ -7,11 +7,10 @@
 import cmd2
 from colorama import Style
 
-from ama import VERSION
-from ama.commands import CommandCategory as Category
-from ama.utils.fineprint import print_status
-from ama.utils import color
-from ama.utils.misc import tips2table
+from amaconsole import AMACONSOLE_VERSION
+from amaconsole.commands import CommandCategory as Category
+from amaconsole.utils import color
+#from ama.utils.misc import tips2table
 
 @cmd2.with_default_category(Category.CONSOLE)
 class SimpleCmds(cmd2.CommandSet):
@@ -29,7 +28,7 @@ class SimpleCmds(cmd2.CommandSet):
         """
         Print Ama-Framework's version
         """
-        print_status(f"Ama version: {color(VERSION, style=Style.BRIGHT)}")
+        self.poutput(f"Ama version: {color(AMACONSOLE_VERSION, style=Style.BRIGHT)}")
 
     def do_banner(self, _: cmd2.Statement):
         """
@@ -42,5 +41,5 @@ class SimpleCmds(cmd2.CommandSet):
         """
         Print some useful tips
         """
-
-        tips2table(self._cmd.banner_generator.tips)
+        pass
+        #tips2table(self._cmd.banner_generator.tips)

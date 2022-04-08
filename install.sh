@@ -10,7 +10,7 @@ if [[ $CLEAN -eq 1 ]]; then
     rm -rf ${GFILES[@]}
 fi
 
-if [[ $CLEAN_PYCACHE $eq 1 ]]; then
+if [[ $CLEAN_PYCACHE -eq 1 ]]; then
     rm -rf $(find amaconsole -name __pycache__ -type d)
 fi
 

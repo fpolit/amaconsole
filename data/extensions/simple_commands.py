@@ -10,7 +10,7 @@ from cmd2 import with_argparser
 from datetime import datetime
 
 
-@cmd2.with_default_category('Simple Commands - Extension Example')
+@cmd2.with_default_category('External Commands (EXAMPLE)')
 class SimpleCommands(cmd2.CommandSet):
 
     repeater_parser = argparse.ArgumentParser(
@@ -31,6 +31,7 @@ class SimpleCommands(cmd2.CommandSet):
         repetitions = args.number if args.number > 0 else 1
         count = 0
         while count < repetitions:
-            self._cmd.poutput(f"[{datetime.now()}] {message}")
+            now = datetime.now()
+            self._cmd.poutput(f"[{now}] {args.message}")
             sleep(args.sleep)
             count += 1

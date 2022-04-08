@@ -6,7 +6,7 @@ from __future__ import annotations
 
 from datetime import timedelta, datetime
 from threading import Thread
-from typing import Callable, Tuple, Dict, List
+from typing import Callable, Tuple, List
 
 from amaconsole.utils import RedirectOutput
 
@@ -18,6 +18,7 @@ class Process:
                  delay: timedelta = None,
                  outfile: str = None):
         self.pid: int = None # assigned by Background Processor
+        self.name = name
         self.thread = Thread(target=target, args=args)
         self.priority = Process.validate_priority(priority)
         self.delay = delay if delay else timedelta()
@@ -25,7 +26,6 @@ class Process:
         self.command = target.__name__
         self.reason: str = None # assigned by Background Processor
         self.args = args
-        self.kwrags = kwargs
         self.depends = depends if depends else []
 
         self.outfile = outfile

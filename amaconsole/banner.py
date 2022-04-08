@@ -28,7 +28,7 @@ class BannerGenerator:
             style=Style.BRIGHT
         )
         cls.amaconsole_version = color(AMACONSOLE_VERSION, fore=Fore.CYAN)
-        cls.amactld_version = None # RPC call to get amactld version
+        cls.amacontroller_version = None # RPC call to get amactld version
         cls.banners = [
             r"""
         eeeee eeeeeee eeeee
@@ -234,7 +234,7 @@ class BannerGenerator:
             amacontroller : {cls.amacontroller_version}
 
     {color('Modules:', style=Style.BRIGHT)}
-{modules}
+{modules_summary}
 
     {color('Tip:', style=Style.BRIGHT)}
         {tip}

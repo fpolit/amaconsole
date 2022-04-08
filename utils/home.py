@@ -84,32 +84,35 @@ def create():
     # Initializing configuration file
 
     config = configparser.ConfigParser()
-    config['DEFAULT'] = {
-        'AMACONSOLE_HOME': AMACONSOLE_HOME.path,
-        'AMACONSOLE_EXTENSIONS': AMACONSOLE_EXTENSIONS.path,
-        'HISTORY_FILE': HISTORY_FILE.path,
-        'CONTROLLER_PORT': args.controller_port,
-        'CONTROLLER_DATA_PORT': args.controller_data_port
+    config['LOCATION'] = {
+        'amaconsole_home': AMACONSOLE_HOME.path,
+        'amaconsole_extensions': AMACONSOLE_EXTENSIONS.path,
+    }
+
+    config['CONTROLLER'] = {
+        'controller_port': args.controller_port,
+        'controller_data_port': args.controller_data_port
     }
 
     config['LOGGING'] = {
-        'LOGFILE': LOGFILE.path,
-        'LOGFORMAT': args.logformat,
-        'LOGLEVEL': args.loglevel
+        'logfile': LOGFILE.path,
+        'logformat': args.logformat,
+        'loglevel': 10
     }
 
     config['PROCESSES'] = {
-        'MAX_ACTIVE_PROCESSES': args.max_active_processes,
-        'MAX_QUEUE_SIZE': args.max_queue_size,
+        'max_active_processes': args.max_active_processes,
+        'max_queue_size': args.max_queue_size,
     }
 
     config['CONSOLE'] = {
-        'TABLE_STYLE': args.table_style,
-        'TIPS': args.show_tips,
-        'VERBOSE': args.verbose
+        'history_file': HISTORY_FILE.path,
+        'table_style': args.table_style,
+        'show_tips': args.show_tips,
+        'verbose': args.verbose
     }
 
-    AMACONSOLE_CONFIGFILE = os.path.join(AMACONSOLE_HOME.path, 'amaconsole.cfg')
+    AMACONSOLE_CONFIGFILE = os.path.join(AMACONSOLE_HOME.path, 'amaconsole.conf')
     with open(AMACONSOLE_CONFIGFILE, 'w') as f:
         config.write(f)
 
