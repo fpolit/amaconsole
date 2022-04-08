@@ -6,9 +6,12 @@ import cmd2
 import argparse
 from cmd2 import with_argparser
 from tabulate import tabulate
+from colorama import Style
 
 from amaconsole.commands import CommandCategory as Category
 from amaconsole.extensions import load_extensions
+from amaconsole.utils.misc import commands_count
+from amaconsole.utils import color
 
 @cmd2.with_default_category(Category.CONSOLE)
 class ExtensionsCommands(cmd2.CommandSet):
@@ -25,11 +28,13 @@ class ExtensionsCommands(cmd2.CommandSet):
         if handler:
             handler(ns)
         else: # List loaded extentions
-            table = [[ext_name] for ext_name in self._cmd.extensions]
+            #import pdb; pdb.set_trace()
+            table = [[name, commands_count(ext), ext.cmd2_default_help_category] for name, ext in self._cmd.extensions.items()]
 
+            self._cmd.poutput(color('Custom Extensions:', style=Style.BRIGHT))
             self._cmd.poutput(tabulate(table,
-                                       headers=['Extensions'],
-                                       tablefmt=self.config['CONSOLE']['TABLEFMT']))
+                                       headers=['Name', 'Commands', 'Category'],
+                                       tablefmt=self._cmd.config['CONSOLE']['tablefmt']))
 
     load_parser = cmd2.Cmd2ArgumentParser()
     load_parser.add_argument('-I', '--include-dir',

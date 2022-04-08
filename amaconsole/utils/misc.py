@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import re
+import cmd2
 from datetime import timedelta
 
 def str2timedelta(stime: str) -> timedelta:
@@ -29,3 +30,11 @@ def str2timedelta(stime: str) -> timedelta:
 
     except Exception as error:
         print(error)
+
+def commands_count(extension:cmd2.CommandSet) -> int:
+    cmds_count = 0
+    for attribute in dir(extension):
+        if attribute.startswith('do_') and callable(getattr(extension, attribute)):
+            cmds_count += 1
+
+    return cmds_count

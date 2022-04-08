@@ -8,9 +8,10 @@ import random
 from colorama import Fore, Style
 from typing import List
 
+import cmd2
 from amaconsole import AMACONSOLE_VERSION
 from amaconsole.utils import color
-
+from amaconsole.utils.misc import commands_count
 
 class BannerGenerator:
     """
@@ -22,13 +23,16 @@ class BannerGenerator:
     banners: List[str]
     tips: List[str]
 
-    def __new__(cls):
+    _cmd: cmd2.Cmd
+
+    def __new__(cls, cmd_app: cmd2.Cmd = None):
+        cls._cmd = cmd_app
         cls.ama_info = color(
             "A specialized environment for the password cracking process",
             style=Style.BRIGHT
         )
         cls.amaconsole_version = color(AMACONSOLE_VERSION, fore=Fore.CYAN)
-        cls.amacontroller_version = None # RPC call to get amactld version
+        cls.amacontroller_version = None # RPC call to get amactld version (VIA _cmd object)
         cls.banners = [
             r"""
         eeeee eeeeeee eeeee
@@ -194,6 +198,7 @@ class BannerGenerator:
         """
         return None
 
+
     @classmethod
     def modules_summary(cls) -> str:
         summary = None
@@ -214,6 +219,18 @@ class BannerGenerator:
         # summary = '\n'.join(ama_modules)
         return summary
 
+    @classmethod
+    def extensions_summary(cls) -> Dict[str: int]:
+        stats = {
+            'extensions_count': 0,
+            'injected_cmds': 0
+        }
+
+        for name, ext in cls._cmd.extensions.items():
+            stats['extensions_count'] += 1
+            stats['injected_cmds'] += commands_count(ext)
+
+        return stats
 
     @classmethod
     def random(cls) -> str:
@@ -223,6 +240,7 @@ class BannerGenerator:
         banner = random.choice(cls.banners)
         tip = random.choice(cls.tips)
         modules_summary = cls.modules_summary()
+        extensions_summary = cls.extensions_summary()
 
         return (
             f"""
@@ -235,6 +253,10 @@ class BannerGenerator:
 
     {color('Modules:', style=Style.BRIGHT)}
 {modules_summary}
+
+    {color('Custom extensions:', style=Style.BRIGHT)}
+            Extension count   : {extensions_summary['extensions_count']}
+            Injected commands : {extensions_summary['injected_cmds']}
 
     {color('Tip:', style=Style.BRIGHT)}
         {tip}

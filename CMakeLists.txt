@@ -117,8 +117,10 @@ install(CODE "execute_process(COMMAND ${Python3_EXECUTABLE} ${SETUP_PY} install 
 if(INIT_HOME)
   set(AMACONSOLE_HOME "$ENV{HOME}/.amaconsole")
   set(HOME_SCRIPT "${CMAKE_CURRENT_SOURCE_DIR}/utils/home.py")
-  # message(INFO "Initilizing amaconsole home")
   install(CODE "execute_process(COMMAND ${Python3_EXECUTABLE} ${HOME_SCRIPT} -b ${AMACONSOLE_HOME} -y)")
+
+  set(EXTENSIONS_REQUIREMENTS "${AMACONSOLE_HOME}/extensions/requirements.txt")
+  install(CODE "execute_process(COMMAND ${Python3_EXECUTABLE} -m pip install -r ${EXTENSIONS_REQUIREMENTS})")
 endif()
 
 if(CMAKE_BUILD_TESTS)

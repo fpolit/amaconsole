@@ -39,7 +39,7 @@ class AmaConsole(Cmd):
                  config_file: str = None,
                  **kwargs):
         self.config: Dict[str, Dict[str, Any]] = {}
-        self.connection_args = {}
+        #self.connection_args = {}
         self.init_config(config_args, config_file)
 
         super().__init__(allow_redirection=True,
@@ -185,5 +185,5 @@ class AmaConsole(Cmd):
 
 
     def init_banner_generator(self) -> None:
-        self.banner_generator = BannerGenerator()
+        self.banner_generator = BannerGenerator(cmd_app=self)
         self.intro = self.banner_generator.random()

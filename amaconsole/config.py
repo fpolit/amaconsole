@@ -27,7 +27,7 @@ procparser.add_argument('-qS', '--max-queue-size',
                         help='Maximun queue size')
 
 cmdparser = parser.add_argument_group(title='Console options')
-cmdparser.add_argument('-tS', '--table-style', dest='table_style',
+cmdparser.add_argument('-tF', '--tablefmt',
                        default='pretty',
                        help='Default table style')
 cmdparser.add_argument('-sT', '--show-tips',

@@ -107,7 +107,7 @@ def create():
 
     config['CONSOLE'] = {
         'history_file': HISTORY_FILE.path,
-        'table_style': args.table_style,
+        'tablefmt': args.tablefmt,
         'show_tips': args.show_tips,
         'verbose': args.verbose
     }
@@ -122,6 +122,9 @@ def create():
 
     EXTENSIONS_EXAMPLE = os.path.join(REPO_SOURCE_DIR, 'data/extensions/simple_commands.py')
     copyfile(EXTENSIONS_EXAMPLE, AMACONSOLE_EXTENSIONS.path)
+
+    EXTENSIONS_REQUIREMENTS = os.path.join(REPO_SOURCE_DIR, 'data/extensions/requirements.txt')
+    copyfile(EXTENSIONS_REQUIREMENTS, AMACONSOLE_EXTENSIONS.path)
 
 if __name__=='__main__':
     create()
