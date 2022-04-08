@@ -1,12 +1,17 @@
 #!/bin/bash
 
 CLEAN=1
+CLEAN_PYCACHE=1
 GFILES=(amaconsole.egg-info dist build amaconsole/__init__.py)  # generated files and directories
 RUNTESTS=1
 BUILD_DIR=build
 
 if [[ $CLEAN -eq 1 ]]; then
     rm -rf ${GFILES[@]}
+fi
+
+if [[ $CLEAN_PYCACHE $eq 1 ]]; then
+    rm -rf $(find amaconsole -name __pycache__ -type d)
 fi
 
 mkdir -p $BUILD_DIR

@@ -4,13 +4,13 @@
 # ama console
 
 import os
-import json
+#import json
 import argparse
 import logging
 from cmd2 import Cmd
 from pathlib import Path
 from threading import Thread
-from typing import Dict, Any
+from typing import Dict, List
 from configparser import ConfigParser
 
 from amaconsole import PROMPT
@@ -54,6 +54,7 @@ class AmaConsole(Cmd):
         self.banner_generator: BannerGenerator = None
 
         self.bg_processor: BGProcessor = None
+        self.bg_processor_thread: Thread = None
 
         # preloop hooks
         self.register_preloop_hook(self.init_logger)
