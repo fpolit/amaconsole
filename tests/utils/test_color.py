@@ -30,7 +30,7 @@ class TestUtilsColor(TestCase):
         fancy_msg = f"{Back.RED}{fancy_msg}{Back.RESET}"
         fancy_msg = f"{Style.BRIGHT}{fancy_msg}{Style.NORMAL}"
 
-        self.asertEqual(
+        self.assertEqual(
             fancy_msg,
             color(slef.msg,
                   fore=Fore.REF,
