@@ -58,7 +58,11 @@ class SimpleCommands(cmd2.CommandSet):
     @with_argparser(asciigen_parser)
     def do_asciigen(self, args):
         if args.list_fonts:
-            print(pyfiglet.Figlet().getFonts())
+            table = [[font] for font in pyfiglet.Figlet().getFonts()]
+            self._cmd.poutput(tabulate(table,
+                                       headers=['Fonts'],
+                                       tablefmt=self._cmd.config['CONSOLE']['tablefmt']))
+
         else:
             font =  pyfiglet.Figlet(font=args.font)
             self._cmd.poutput(font.renderText(args.message))
