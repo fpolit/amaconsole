@@ -43,7 +43,7 @@ pipeline{
         stage('Coverage'){
             steps {
                   sh '''
-                  coverage run -m pytest
+                  coverage run -m pytest tests/
                   coverage report -m
                   '''
             }
