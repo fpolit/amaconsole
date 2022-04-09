@@ -43,3 +43,6 @@ class SimpleCmds(cmd2.CommandSet):
         """
         pass
         #tips2table(self._cmd.banner_generator.tips)
+
+    def do_pdbtrace(self, _: cmd2.Statement):
+        import pdb; pdb.set_trace()

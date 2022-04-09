@@ -8,7 +8,11 @@ import argparse
 
 
 from amaconsole.console import AmaConsole
-from amaconsole.config import parser
+from amaconsole.parsers import (
+    parser,
+    ctrlparser,
+    cmdparser
+)
 
 def main():
     """
@@ -23,16 +27,22 @@ def main():
                         help='Include directory of extensions')
     parser.add_argument('-c', '--config-file', dest='config_file',
                         help='Configuration File')
-    amactld_parser = parser.add_argument_group(title='Amacontroller connection')
-    amactld_parser.add_argument('-H', '--host', required=True,
-                                dest='controller_host',
-                                help='amacontroller host')
-    amactld_parser.add_argument('-p', '--port', type=int,
-                                dest='controller_port',
-                                help='amacontroller port')
-    amactld_parser.add_argument('-dP', '--data-port', type=int,
-                                dest='controller_data_port',
-                                help='amacontroller data port')
+
+    ctrlparser.add_argument('-H', '--host',
+                            dest='controller_host',
+                            help='amacontroller host')
+
+    cmdparser.add_argument('-v', '--verbose',
+                           action='store_true',
+                           help='Verbose mode')
+    cmdparser.add_argument('-d', '--debug',
+                           action='store_true',
+                           help='Debug mode')
+    cmdparser.add_argument('--loglevel',
+                           default=10,
+                           choices=[0, 10, 20, 30, 40, 50],
+                           type=int,
+                           help='Log level for stream handler (used in debug mode)')
 
 
     args = parser.parse_args()
@@ -41,6 +51,7 @@ def main():
         #import pdb; pdb.set_trace()
         console = AmaConsole(config_args=args,
                              config_file=args.config_file,
+                             verbose=args.verbose,
                              allow_cli_args=False)
         sys.exit(console.cmdloop())
 

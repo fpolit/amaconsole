@@ -20,7 +20,7 @@ class Node(ABC):
 
     def add_child(self, node: Union[str, Node]):
         if isinstance(node, Node):
-            node.root = self
+            node.parent = self
         else:
             name = node
             node = Node(name, parent=self)
@@ -50,6 +50,13 @@ class DirNode(Node):
         for child in self.children:
             child.create()
 
+    def add_file(self, filename: str) -> FileNode:
+        filenode = FileNode(name=filename, parent=self)
+        return filenode
+
+    def add_subdir(self, sdir: str) -> DirNode:
+        dirnode = DirNode(name=sdir, parent=self)
+        return dirnode
 
 
 class FileSystem:
@@ -74,16 +81,15 @@ class FileSystem:
     def path(self) -> Path:
         return self.root_node.path
 
-    def add_node(self, node: Node):
-        node.parent = self
-        self.children.append(node)
+    def add_node(self, node: Union[FileNode, DirNode]):
+        self.add_child(node)
 
     def add_file(self, filename: str) -> FileNode:
-        filenode = FileNode(name=filename, parent=self.root_node)
+        filenode = self.root_node.add_file(filename)
         return filenode
 
     def add_subdir(self, sdir: str) -> DirNode:
-        dirnode = DirNode(name=sdir, parent=self.root_node)
+        dirnode = self.root_node.add_subdir(sdir)
         return dirnode
 
     def create(self):

@@ -24,11 +24,7 @@ class BGProcessor:
 
     _instance: BGProcessor = None
 
-    def __new__(cls, logfile: str,
-                max_active_processes=8,
-                maxsize=1000,
-                logformat: str = None,
-                loglevel = logging.DEBUG):
+    def __new__(cls,max_active_processes=8, maxsize=1000):
         if not cls._instance:
             cls.SUBMITTED_PROCESS_COUNT = 0
             cls.MAX_ACTIVE_PROCESSES = max_active_processes
@@ -37,8 +33,7 @@ class BGProcessor:
             cls.processing = []
 
             # logger creation
-            cls.logger = Logger(__file__, logformat, loglevel)
-            cls.logger.add_file_handler(logfile)
+            cls.logger = logging.getLogger('bgprocessor')
 
             cls._instance = super(BGProcessor, cls).__new__(cls)
 

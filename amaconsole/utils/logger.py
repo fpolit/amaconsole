@@ -13,33 +13,32 @@ from pathlib import Path
 
 
 class Logger(logging.Logger):
-    def __init__(self, name: str, logformat: str, level=logging.DEBUG):
-        super().__init__(name, level)
+    def __init__(self, name: str, logformat: str, loglevel=logging.DEBUG):
+        super().__init__(name, loglevel)
         self.logformat = logformat
-        self.setLevel(level)
-        self.level = level
+        self.setLevel(loglevel)
 
     def add_file_handler(self, logfile: Path,
-                         logformat: str = None, level=None):
-        level = level if level else self.level
+                         logformat: str = None, loglevel=None):
+        loglevel = loglevel if loglevel else self.level
         logformat = logformat if logformat else self.logformat
 
         formatter = Formatter(fmt=logformat)
 
         handler = FileHandler(logfile)
-        handler.setLevel(level)
+        handler.setLevel(loglevel)
         handler.setFormatter(formatter)
 
         self.addHandler(handler)
 
-    def add_stream_handler(self, logformat: str = None, level=None):
-        level = level if level is not None else self.level
+    def add_stream_handler(self, logformat: str = None, loglevel=None):
+        loglevel = loglevel if loglevel is not None else self.level
         logformat = logformat if logformat is not None else self.logformat
 
         formatter = Formatter(fmt=logformat)
 
         handler = StreamHandler()
-        handler.setLevel(level)
+        handler.setLevel(loglevel)
         handler.setFormatter(formatter)
 
         self.addHandler(handler)

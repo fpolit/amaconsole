@@ -220,7 +220,7 @@ class BannerGenerator:
         return summary
 
     @classmethod
-    def extensions_summary(cls) -> Dict[str: int]:
+    def extensions_summary(cls) -> Dict[str, int]:
         stats = {
             'extensions_count': 0,
             'injected_cmds': 0
@@ -255,7 +255,7 @@ class BannerGenerator:
 {modules_summary}
 
     {color('Custom extensions:', style=Style.BRIGHT)}
-            Extension count   : {extensions_summary['extensions_count']}
+            Extensions        : {extensions_summary['extensions_count']}
             Injected commands : {extensions_summary['injected_cmds']}
 
     {color('Tip:', style=Style.BRIGHT)}

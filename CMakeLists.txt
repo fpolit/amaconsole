@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.5)
 
 project(amaconsole
-  VERSION 1.0.2
+  VERSION 1.0.3
   DESCRIPTION "Console to interact with Ama-Framework"
   HOMEPAGE_URL https://github.com/fpolit/amaconsole
 )
