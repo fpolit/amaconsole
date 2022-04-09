@@ -34,6 +34,6 @@ class TestUtilsColor(TestCase):
             fancy_msg,
             color(self.msg,
                   fore=Fore.RED,
-                  back=back.RED,
+                  back=Back.RED,
                   style=Style.BRIGHT)
         )
