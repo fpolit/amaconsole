@@ -11,7 +11,7 @@ def str2timedelta(stime: str) -> timedelta:
     """
 
     try:
-        hours, mins, secs = re.search('(\d*h)?(\d*m)?(\d*s)?', stime).groups()
+        hours, mins, secs = re.search(r'(\d*h)?(\d*m)?(\d*s)?', stime).groups()
         tdelta = {}
         if hours:
             tdelta_hours = int(hours[:-1])
