@@ -4,7 +4,6 @@ pipeline{
         CMAKE_COMPILER_WALL='ON'
         CMAKE_BUILD_TYPE='Debug'
         CMAKE_BUILD_TESTS='ON'
-        CODACY_AMACONSOLE_TOKEN = credentials('CODACY_AMACONSOLE_TOKEN')
     }
 
     agent {
@@ -46,9 +45,6 @@ pipeline{
                   sh '''
                   coverage run -m pytest tests/
                   coverage report -m
-                  coverage xml
-                  wget -P /dev/shm https://coverage.codacy.com/get.sh
-                  /dev/shm/get.sh report -t ${CODACY_AMACONSOLE_TOKEN} -r coverage.xml
                   '''
             }
         }       
