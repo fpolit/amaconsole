@@ -20,6 +20,7 @@ class BGProcessor:
     pending: PriorityQueue
     processing: List[Process]
     completed: List[Process]
+    failed: List[Process]
     logger: Logger
 
     _instance: BGProcessor = None
@@ -31,6 +32,7 @@ class BGProcessor:
             cls.pending = PriorityQueue(maxsize)
             cls.completed = []
             cls.processing = []
+            cls.failed = []
 
             # logger creation
             cls.logger = logging.getLogger('bgprocessor')
