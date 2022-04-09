@@ -47,7 +47,8 @@ pipeline{
                   coverage run -m pytest tests/
                   coverage report -m
                   coverage xml
-                  bash <(curl -Ls https://coverage.codacy.com/get.sh) report -t ${CODACY_AMACONSOLE_TOKEN} -r coverage.xml
+                  wget -P /dev/shm https://coverage.codacy.com/get.sh
+                  /dev/shm/get.sh report -t ${CODACY_AMACONSOLE_TOKEN} -r coverage.xml
                   '''
             }
         }       
