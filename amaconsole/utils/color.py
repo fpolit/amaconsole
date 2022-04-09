@@ -81,13 +81,13 @@ class ForeColorChain:
 
 class BackColorChain:
     def __init__(self):
-        black_back_color = BackColorHandler(Fore.BLACK)
-        blue_back_color = BackColorHandler(Fore.BLUE, next_handler=black_back_color)
-        cyan_back_color = BackColorHandler(Fore.CYAN, next_handler=blue_back_color)
-        green_back_color = BackColorHandler(Fore.GREEN, next_handler=cyan_back_color)
-        red_back_color = BackColorHandler(Fore.RED, next_handler=green_back_color)
-        white_back_color = BackColorHandler(Fore.WHITE, next_handler=red_back_color)
-        yellow_back_color = BackColorHandler(Fore.YELLOW, next_handler=white_back_color)
+        black_back_color = BackColorHandler(Back.BLACK)
+        blue_back_color = BackColorHandler(Back.BLUE, next_handler=black_back_color)
+        cyan_back_color = BackColorHandler(Back.CYAN, next_handler=blue_back_color)
+        green_back_color = BackColorHandler(Back.GREEN, next_handler=cyan_back_color)
+        red_back_color = BackColorHandler(Back.RED, next_handler=green_back_color)
+        white_back_color = BackColorHandler(Back.WHITE, next_handler=red_back_color)
+        yellow_back_color = BackColorHandler(Back.YELLOW, next_handler=white_back_color)
 
 
         self.init_handler = yellow_back_color
