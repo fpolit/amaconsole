@@ -33,7 +33,7 @@ class TestUtilsColor(TestCase):
         self.assertEqual(
             fancy_msg,
             color(self.msg,
-                  fore=Fore.REF,
+                  fore=Fore.RED,
                   back=back.RED,
                   style=Style.BRIGHT)
         )
