@@ -26,13 +26,19 @@ cmdparser.add_argument('-sT', '--show-tips',
                        help='Show tips in console')
 
 resmanparser = parser.add_argument_group(title='Resource manager options')
+resmanparser.add_argument('-rP','--resman-port',
+                          default=1318,
+                          dest='resman_port',
+                          help='Resource manager port')
 
 ctrlparser = parser.add_argument_group(title='Controller options')
 ctrlparser.add_argument('-cP','--controller-port',
                         default=1317,
                         dest='controller_port',
                         help='Amacontroller port')
-ctrlparser.add_argument('-dP','--data-port',
-                        default=1318,
-                        dest='controller_data_port',
-                        help='Amacontroller port')
+
+dbparser = parser.add_argument_group(title='Database options')
+dbparser.add_argument('-dP','--amadb-port',
+                      default=1319,
+                      dest='amadb_port',
+                      help='AmaDB port')

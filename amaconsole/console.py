@@ -8,16 +8,17 @@ import os
 import argparse
 import cmd2
 import yaml
+import importlib
 import logging
 import logging.config
 import configparser
 from cmd2 import Cmd
 from pathlib import Path
 from threading import Thread
-from typing import Dict, List, Any
+from typing import Dict, List, Any, Optional
 
 
-from amaconsole import PROMPT
+from amaconsole import PROMPT, AMACONSOLE_VERSION
 from amaconsole.commands import CommandCategory
 from amaconsole.banner import BannerGenerator
 from amaconsole.processor import BGProcessor
@@ -129,6 +130,44 @@ class AmaConsole(Cmd):
         else:
             if verbose:
                 self.poutput(f"Extension {extname} doesn't exist")
+
+    def _get_amacontroller_version(self) -> Optional[str]:
+        return None
+
+    def _get_amadb_version(self) -> Optional[str]:
+        return None
+
+    def _get_amacore_version(self) -> Optional[str]:
+        version: str = None
+        try:
+            amacore = importlib.import_module('amacore')
+            version = getattr(amacore, 'AMACORE_VERSION')
+        except ModuleNotFoundError as error:
+            self.logger.exception(error)
+
+        return version
+
+    def _get_amaproto_version(self) -> Optional[str]:
+        version: str = None
+        try:
+            amaproto = importlib.import_module('amaproto')
+            version = getattr(amaproto, 'AMAPROTO_VERSION')
+        except ModuleNotFoundError as error:
+            self.logger.exception(error)
+
+        return version
+
+    def _get_ama_component_versions(self) -> Dict[str, str]:
+        versions = {
+            'amacore': self._get_amacore_version(),
+            'amaconsole': AMACONSOLE_VERSION,
+            'amacontroller': self._get_amacontroller_version(),
+            'amadb': self._get_amadb_version(),
+            'amaproto': self._get_amaproto_version()
+        }
+
+        return versions
+
 
     def init_config(self,
                     config_args: argparse.Namespace,

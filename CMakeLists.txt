@@ -107,10 +107,8 @@ add_custom_command(OUTPUT ${TIMESTAMP}
 	COMMAND ${Python3_EXECUTABLE} ${SETUP_PY} build
 	COMMAND ${CMAKE_COMMAND} -E touch ${TIMESTAMP})
 
-add_custom_target(target ALL DEPENDS ${TIMESTAMP})
-#install(CODE "message(INFO 'Installing python requirements')")
+add_custom_target(pybuild_amaconsole ALL DEPENDS ${TIMESTAMP})
 install(CODE "execute_process(COMMAND ${Python3_EXECUTABLE} -m pip install -r ${REQUIREMENTS})")
-#install(CODE "message(INFO 'Installing python package (amaconsole - ${CMAKE_PROJECT_VERSION})')")
 install(CODE "execute_process(COMMAND ${Python3_EXECUTABLE} ${SETUP_PY} install --verbose)")
 
 # initialize amaconsole home directory

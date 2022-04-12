@@ -133,9 +133,10 @@ def create():
         'amaconsole_extensions': str(AMACONSOLE_EXTENSIONS.path),
     }
 
-    config['CONTROLLER'] = {
+    config['AMA_COMPONENTS'] = {
+        'amadb_port': args.amadb_port,
         'controller_port': args.controller_port,
-        'controller_data_port': args.controller_data_port
+        'resman_port': args.resman_port
     }
 
     config['LOGGING'] = {

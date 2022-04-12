@@ -6,7 +6,7 @@
 
 import cmd2
 from colorama import Style
-
+from tabulate import tabulate
 from amaconsole import AMACONSOLE_VERSION
 from amaconsole.commands import CommandCategory as Category
 from amaconsole.utils import color
@@ -26,9 +26,15 @@ class SimpleCmds(cmd2.CommandSet):
 
     def do_version(self, _: cmd2.Statement):
         """
-        Print Ama-Framework's version
+        Print Ama-Framework component versions
         """
-        self.poutput(f"Ama version: {color(AMACONSOLE_VERSION, style=Style.BRIGHT)}")
+        ama_versions = self._cmd._get_ama_component_versions()
+
+        table = [[component, version] for component, version in ama_versions.items()]
+
+        self._cmd.poutput(tabulate(table,
+                                   headers=['Component', 'Version'],
+                                   tablefmt=self._cmd.config['CONSOLE']['tablefmt']))
 
     def do_banner(self, _: cmd2.Statement):
         """

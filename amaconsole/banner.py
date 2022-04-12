@@ -18,8 +18,6 @@ class BannerGenerator:
     Banner Generator
     """
     ama_info: str
-    amacontroller_version: str
-    amaconsole_version: str
     banners: List[str]
     tips: List[str]
 
@@ -31,8 +29,6 @@ class BannerGenerator:
             "A specialized environment for the password cracking process",
             style=Style.BRIGHT
         )
-        cls.amaconsole_version = color(AMACONSOLE_VERSION, fore=Fore.CYAN)
-        cls.amacontroller_version = None # RPC call to get amactld version (VIA _cmd object)
         cls.banners = [
             r"""
         eeeee eeeeeee eeeee
@@ -191,13 +187,6 @@ class BannerGenerator:
 
         return _instance
 
-    @classmethod
-    def get_amacontroller_version(cls) -> str:
-        """
-        RPC call to get amacontroller version
-        """
-        return None
-
 
     @classmethod
     def modules_summary(cls) -> str:
@@ -238,18 +227,24 @@ class BannerGenerator:
         Generate a random banner
         """
         banner = random.choice(cls.banners)
-        tip = random.choice(cls.tips)
         modules_summary = cls.modules_summary()
         extensions_summary = cls.extensions_summary()
+
+        ama_versions = cls._cmd._get_ama_component_versions()
+
+        for component, version in ama_versions.items():
+            ama_versions[component] = color(version, fore=Fore.CYAN)
 
         return (
             f"""
         {banner}
     {cls.ama_info}
 
-        VERSIONS:
-            amaconsole    : {cls.amaconsole_version}
-            amacontroller : {cls.amacontroller_version}
+        COMPONENTS:
+            amacore       : {ama_versions['amacore']}
+            amaconsole    : {ama_versions['amaconsole']}
+            amacontroller : {ama_versions['amacontroller']}
+            amadb         : {ama_versions['amadb']}
 
     {color('Modules:', style=Style.BRIGHT)}
 {modules_summary}
@@ -257,8 +252,5 @@ class BannerGenerator:
     {color('Custom extensions:', style=Style.BRIGHT)}
             Extensions        : {extensions_summary['extensions_count']}
             Injected commands : {extensions_summary['injected_cmds']}
-
-    {color('Tip:', style=Style.BRIGHT)}
-        {tip}
             """
         )
