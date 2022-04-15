@@ -131,17 +131,17 @@ class AmaConsole(Cmd):
             if verbose:
                 self.poutput(f"Extension {extname} doesn't exist")
 
-    def _get_amacontroller_version(self) -> Optional[str]:
-        return None
+    def _get_amacontroller_version(self) -> str:
+        return 'None' # RPC CALL
 
-    def _get_amadb_version(self) -> Optional[str]:
-        return None
+    def _get_amadb_version(self) -> str:
+        return 'None' # RPC CALL
 
     def _get_amacore_version(self) -> Optional[str]:
         version: str = None
         try:
-            amacore = importlib.import_module('amacore')
-            version = getattr(amacore, 'AMACORE_VERSION')
+            from amaconsole import AMACORE_VERSION
+            version = AMACORE_VERSION
         except ModuleNotFoundError as error:
             self.logger.exception(error)
 
@@ -150,8 +150,8 @@ class AmaConsole(Cmd):
     def _get_amaproto_version(self) -> Optional[str]:
         version: str = None
         try:
-            amaproto = importlib.import_module('amaproto')
-            version = getattr(amaproto, 'AMAPROTO_VERSION')
+            from amaconsole import AMAPROTO_VERSION
+            version = AMAPROTO_VERSION
         except ModuleNotFoundError as error:
             self.logger.exception(error)
 
@@ -160,10 +160,10 @@ class AmaConsole(Cmd):
     def _get_ama_component_versions(self) -> Dict[str, str]:
         versions = {
             'amacore': self._get_amacore_version(),
+            'amaproto': self._get_amaproto_version(),
             'amaconsole': AMACONSOLE_VERSION,
             'amacontroller': self._get_amacontroller_version(),
-            'amadb': self._get_amadb_version(),
-            'amaproto': self._get_amaproto_version()
+            'amadb': self._get_amadb_version()
         }
 
         return versions

@@ -244,6 +244,7 @@ class BannerGenerator:
             amacore       : {ama_versions['amacore']}
             amaconsole    : {ama_versions['amaconsole']}
             amacontroller : {ama_versions['amacontroller']}
+            amaproto      : {ama_versions['amaproto']}
             amadb         : {ama_versions['amadb']}
 
     {color('Modules:', style=Style.BRIGHT)}

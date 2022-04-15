@@ -28,10 +28,11 @@ endif()
 
 # Finding dependencies
 find_package(Python3  COMPONENTS Interpreter Development REQUIRED)
-find_package(Boost COMPONENTS python REQUIRED)
 
 ## enviroment INFO
 message(DEBUG "PROJECT_VERSION: ${CMAKE_PROJECT_VERSION}")
+message(DEBUG "PROJECT_AMAPROTO_VERSION: ${CMAKE_PROJECT_AMAPROTO_VERSION}")
+message(DEBUG "PROJECT_AMACORE_VERSION: ${CMAKE_PROJECT_AMACORE_VERSION}")
 message(DEBUG "CMAKE_BUILD_TYPE: ${CMAKE_BUILD_TYPE}")
 message(DEBUG "CMAKE_BUILD_TESTS: ${CMAKE_BUILD_TESTS}")
 message(DEBUG "GIT_UPDATE_SUBMODULES: ${GIT_UPDATE_SUBMODULES}")
@@ -46,41 +47,22 @@ find_package(Git)
 if(GIT_FOUND AND EXISTS "${PROJECT_SOURCE_DIR}/.git")
     # Update submodules as needed
     option(GIT_UPDATE_SUBMODULES "Check submodules during build" ON)
-    message(DEBUG "GIT_EXECUTABLE: ${GIT_EXECUTABLE}")
     if(GIT_UPDATE_SUBMODULES)
-      execute_process(COMMAND ${GIT_EXECUTABLE} submodule update --init --recursive
+      message(DEBUG "GIT_EXECUTABLE: ${GIT_EXECUTABLE}")
+      execute_process(COMMAND ${GIT_EXECUTABLE} submodule update --init
       WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
       RESULT_VARIABLE GIT_SUBMOD_RESULT)
     if(NOT GIT_SUBMOD_RESULT EQUAL "0")
-      message(FATAL_ERROR "git submodule update --init --recursive failed with ${GIT_SUBMOD_RESULT}, please checkout submodules")
+      message(FATAL_ERROR "git submodule update --init failed with ${GIT_SUBMOD_RESULT}, please checkout submodules")
     endif()
   endif()
 endif()
 
-# Python extensions (C/CXX) - name structure: ama_LIBNAME_ext.so
-
-# # Add a shared module - modules are intended to be imported at runtime.
-# # - This is where you add the source files
-# ## HELLO_EXT
-# add_library(hello_ext MODULE src/boost_python/hello_ext.cpp)
-
-# # Set up the libraries and header search paths for this target
-# target_link_libraries(hello_ext ${Boost_LIBRARIES} ${PYTHON_LIBRARIES})
-# target_include_directories(hello_ext PRIVATE ${PYTHON_INCLUDE_DIRS})
-
-
-# # echo
-# add_library(echo_ext MODULE src/boost_python/utils/echo/echo_ext.cpp)
-
-# # Set up the libraries and header search paths for this target
-# target_link_libraries(echo_ext ${Boost_LIBRARIES} ${PYTHON_LIBRARIES})
-# target_include_directories(echo_ext PRIVATE ${PYTHON_INCLUDE_DIRS})
-
-
-## INSTALLATION
-
-# Copy bin scripts to build directory
-#file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/bin/amaconsole.py DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+# amaconsole protbuf files generation
+set(CMAKE_PROJECT_AMAPROTO_VERSION "None")
+set(CMAKE_BUILD_AMACONTROLLER_PY_PROTO ON CACHE BOOL "Build amacontroller python protobuf files")
+set(CMAKE_BUILD_AMADB_PY_PROTO ON CACHE BOOL "Build amadb python protobuf files")
+add_subdirectory(proto) # generate amacontroller_protos and amadb_protos targets
 
 # python package (amaconsole)
 set(PYTHON_PKG_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/amaconsole")
@@ -88,8 +70,6 @@ set(SETUP_PY_IN "${CMAKE_CURRENT_SOURCE_DIR}/setup.py.in")
 set(SETUP_PY    "${CMAKE_CURRENT_BINARY_DIR}/setup.py")
 set(INIT_PY_IN  "${PYTHON_PKG_SOURCE_DIR}/__init__.py.in")
 set(INIT_PY     "${PYTHON_PKG_SOURCE_DIR}/__init__.py")
-set(OUTPUT      "${CMAKE_CURRENT_BINARY_DIR}/build")
-set(TIMESTAMP   "${OUTPUT}/timestamp")
 
 if(${CMAKE_BUILD_TYPE} STREQUAL "Debug")
   set(REQUIREMENTS "${CMAKE_CURRENT_SOURCE_DIR}/requirements-dev.txt")
@@ -103,17 +83,18 @@ message(DEBUG "Python requirements: ${REQUIREMENTS}")
 configure_file(${SETUP_PY_IN} ${SETUP_PY})
 configure_file(${INIT_PY_IN} ${INIT_PY})
 
-add_custom_command(OUTPUT ${TIMESTAMP}
-	COMMAND ${Python3_EXECUTABLE} ${SETUP_PY} build
-	COMMAND ${CMAKE_COMMAND} -E touch ${TIMESTAMP})
+add_custom_target(pybuild_amaconsole ALL
+  DEPENDS amacontroller_protos amadb_protos)
 
-add_custom_target(pybuild_amaconsole ALL DEPENDS ${TIMESTAMP})
+add_custom_command(TARGET pybuild_amaoconsole
+	COMMAND ${Python3_EXECUTABLE} ${SETUP_PY} build)
+
 install(CODE "execute_process(COMMAND ${Python3_EXECUTABLE} -m pip install -r ${REQUIREMENTS})")
 install(CODE "execute_process(COMMAND ${Python3_EXECUTABLE} ${SETUP_PY} install --verbose)")
 
 # initialize amaconsole home directory
 if(INIT_HOME)
-  set(AMACONSOLE_HOME "$ENV{HOME}/.amaconsole")
+  option(AMACONSOLE_HOME "$ENV{HOME}/.amaconsole" CACHE STRING "Amaconsole home directory")
   set(HOME_SCRIPT "${CMAKE_CURRENT_SOURCE_DIR}/utils/home.py")
   install(CODE "execute_process(COMMAND ${Python3_EXECUTABLE} ${HOME_SCRIPT} -b ${AMACONSOLE_HOME} -y)")
 
@@ -127,4 +108,5 @@ if(CMAKE_BUILD_TESTS)
   add_custom_target(pytest
     COMMAND ${Python3_EXECUTABLE} -m pytest -v ${CMAKE_CURRENT_SOURCE_DIR}/tests)
 endif()
-#add_subdirectory(libs)
+
+add_subdirectory(libs) # install amacore python package (it contains plugins to create commmands for console)
