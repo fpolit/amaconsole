@@ -58,12 +58,6 @@ if(GIT_FOUND AND EXISTS "${PROJECT_SOURCE_DIR}/.git")
   endif()
 endif()
 
-# amaconsole protbuf files generation
-set(CMAKE_PROJECT_AMAPROTO_VERSION "None")
-set(CMAKE_BUILD_AMACONTROLLER_PY_PROTO ON CACHE BOOL "Build amacontroller python protobuf files")
-set(CMAKE_BUILD_AMADB_PY_PROTO ON CACHE BOOL "Build amadb python protobuf files")
-add_subdirectory(proto) # generate amacontroller_protos and amadb_protos targets
-
 # python package (amaconsole)
 set(PYTHON_PKG_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/amaconsole")
 set(SETUP_PY_IN "${CMAKE_CURRENT_SOURCE_DIR}/setup.py.in")
@@ -82,6 +76,19 @@ message(DEBUG "Python requirements: ${REQUIREMENTS}")
 
 configure_file(${SETUP_PY_IN} ${SETUP_PY})
 configure_file(${INIT_PY_IN} ${INIT_PY})
+
+# amaconsole protbuf files generation
+set(CMAKE_PROJECT_AMAPROTO_VERSION "None")
+set(CMAKE_AMACONSOLE_PROTOBUF_DIR "${PYTHON_PKG_SOURCE_DIR}/proto")
+
+set(AMACONTROLLER_PY_PROTO_DESTINATION ${CMAKE_AMACONSOLE_PROTOBUF_DIR} CACHE STRING "Destionation of generated amacontroller protobuf files")
+set(CMAKE_BUILD_AMACONTROLLER_PY_PROTO ON CACHE BOOL "Build amacontroller python protobuf files")
+
+set(AMADB_PY_PROTO_DESTINATION ${CMAKE_AMACONSOLE_PROTOBUF_DIR} CACHE STRING "Destionation of generated amadb protobuf files")
+set(CMAKE_BUILD_AMADB_PY_PROTO ON CACHE BOOL "Build amadb python protobuf files")
+
+add_subdirectory(proto) # generate amacontroller_protos and amadb_protos targets
+
 
 add_custom_target(pybuild_amaconsole ALL
   DEPENDS amacontroller_protos amadb_protos)
