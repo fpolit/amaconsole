@@ -26,7 +26,7 @@ class BannerGenerator:
     def __new__(cls, cmd_app: cmd2.Cmd = None):
         cls._cmd = cmd_app
         cls.ama_info = color(
-            "An environment to scale and manager your attacks",
+            "An environment to manage and scale your attacks",
             style=Style.BRIGHT
         )
         cls.banners = [
