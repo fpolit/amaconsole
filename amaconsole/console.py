@@ -138,7 +138,7 @@ class AmaConsole(Cmd):
         return 'None' # RPC CALL
 
     def _get_amacore_version(self) -> Optional[str]:
-        version: str = None
+        version: str = 'None'
         try:
             from amaconsole import AMACORE_VERSION
             version = AMACORE_VERSION
@@ -148,7 +148,7 @@ class AmaConsole(Cmd):
         return version
 
     def _get_amaproto_version(self) -> Optional[str]:
-        version: str = None
+        version: str = 'None'
         try:
             from amaconsole import AMAPROTO_VERSION
             version = AMAPROTO_VERSION

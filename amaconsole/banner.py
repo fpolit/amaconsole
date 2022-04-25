@@ -26,7 +26,7 @@ class BannerGenerator:
     def __new__(cls, cmd_app: cmd2.Cmd = None):
         cls._cmd = cmd_app
         cls.ama_info = color(
-            "A specialized environment for the password cracking process",
+            "An environment to scale and manager your attacks",
             style=Style.BRIGHT
         )
         cls.banners = [
@@ -190,7 +190,7 @@ class BannerGenerator:
 
     @classmethod
     def modules_summary(cls) -> str:
-        summary = None
+        summary: str = None
         # modules_enum = cls.module_pool.modules.enum()
         # ama_modules = []
         # for mtype, mstype_enum in modules_enum.items():
@@ -206,6 +206,11 @@ class BannerGenerator:
         #     )
 
         # summary = '\n'.join(ama_modules)
+        return summary
+
+
+    def plugins_summary(cls) -> str:
+        summary: str = None
         return summary
 
     @classmethod
@@ -228,6 +233,7 @@ class BannerGenerator:
         """
         banner = random.choice(cls.banners)
         modules_summary = cls.modules_summary()
+        plugins_summary = cls.modules_summary()
         extensions_summary = cls.extensions_summary()
 
         ama_versions = cls._cmd._get_ama_component_versions()
@@ -243,14 +249,17 @@ class BannerGenerator:
         COMPONENTS:
             amacore       : {ama_versions['amacore']}
             amaconsole    : {ama_versions['amaconsole']}
-            amacontroller : {ama_versions['amacontroller']}
             amaproto      : {ama_versions['amaproto']}
+            amacontroller : {ama_versions['amacontroller']}
             amadb         : {ama_versions['amadb']}
 
     {color('Modules:', style=Style.BRIGHT)}
 {modules_summary}
 
-    {color('Custom extensions:', style=Style.BRIGHT)}
+    {color('Plugins:', style=Style.BRIGHT)}
+{plugins_summary}
+
+    {color('Command extensions:', style=Style.BRIGHT)}
             Extensions        : {extensions_summary['extensions_count']}
             Injected commands : {extensions_summary['injected_cmds']}
             """
