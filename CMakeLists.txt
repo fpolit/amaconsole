@@ -112,6 +112,6 @@ if(CMAKE_BUILD_TESTS)
 #     add_custom_target(pytest
 #       COMMAND ${Python3_EXECUTABLE} -m pytest -v ${CMAKE_CURRENT_SOURCE_DIR}/tests)
 #   endif()
-# endif()
+endif()
 
 add_subdirectory(libs) # install amacore python package (it contains plugins to create commmands for console)

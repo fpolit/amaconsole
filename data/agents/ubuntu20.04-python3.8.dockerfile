@@ -12,7 +12,10 @@ RUN python3 -m pip install grpcio grpcio-tools
 
 # AMACORE - dependecies
 RUN apt -y install libboost-python-dev libboost-program-options-dev
-# ADD plugins dependencies
+
+## AMACORE PLUGIN - stegseek
+RUN apt -y install libmhash-dev libmcrypt-dev libjpeg8-dev zlib1g-dev
+
 
 RUN useradd -m -u 970 jenkins && echo "jenkins:jenkins" | chpasswd
 RUN echo "jenkins ALL=(root) NOPASSWD: $(which make)" >> /etc/sudoers
