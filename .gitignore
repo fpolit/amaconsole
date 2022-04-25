@@ -1,0 +1,14 @@
+**/*~
+**/.*
+**/~*
+**/__pycache__
+**/#*#
+coverage.xml
+amaconsole/proto/*_pb2_grpc.py
+amaconsole/proto/*_pb2.py
+amaconsole/__init__.py
+amaconsole.egg-info
+build
+dist
+env
+tmp
