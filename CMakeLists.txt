@@ -86,7 +86,7 @@ configure_file(${INIT_PY_IN} ${INIT_PY})
 add_custom_target(pybuild_amaconsole ALL
   DEPENDS amacontroller_protos amadb_protos)
 
-add_custom_command(TARGET pybuild_amaoconsole
+add_custom_command(TARGET pybuild_amaconsole
 	COMMAND ${Python3_EXECUTABLE} ${SETUP_PY} build)
 
 install(CODE "execute_process(COMMAND ${Python3_EXECUTABLE} -m pip install -r ${REQUIREMENTS})")
