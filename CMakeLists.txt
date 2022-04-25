@@ -94,7 +94,7 @@ install(CODE "execute_process(COMMAND ${Python3_EXECUTABLE} ${SETUP_PY} install 
 
 # initialize amaconsole home directory
 if(INIT_HOME)
-  option(AMACONSOLE_HOME "$ENV{HOME}/.amaconsole" CACHE STRING "Amaconsole home directory")
+  set(AMACONSOLE_HOME "$ENV{HOME}/.amaconsole") # default amaconsole home directory
   set(HOME_SCRIPT "${CMAKE_CURRENT_SOURCE_DIR}/utils/home.py")
   install(CODE "execute_process(COMMAND ${Python3_EXECUTABLE} ${HOME_SCRIPT} -b ${AMACONSOLE_HOME} -y)")
 
@@ -105,13 +105,13 @@ endif()
 if(CMAKE_BUILD_TESTS)
   enable_testing()
   add_subdirectory(tests)
-  if(TARGET pytest)
-    add_custom_command(TARGET pytest
-      COMMAND ${Python3_EXECUTABLE} -m pytest -v ${CMAKE_CURRENT_SOURCE_DIR}/tests)
-  else()
-    add_custom_target(pytest
-      COMMAND ${Python3_EXECUTABLE} -m pytest -v ${CMAKE_CURRENT_SOURCE_DIR}/tests)
-  endif()
-endif()
+#   if(TARGET pytest)
+#     add_custom_command(TARGET pytest
+#       COMMAND ${Python3_EXECUTABLE} -m pytest -v ${CMAKE_CURRENT_SOURCE_DIR}/tests)
+#   else()
+#     add_custom_target(pytest
+#       COMMAND ${Python3_EXECUTABLE} -m pytest -v ${CMAKE_CURRENT_SOURCE_DIR}/tests)
+#   endif()
+# endif()
 
 add_subdirectory(libs) # install amacore python package (it contains plugins to create commmands for console)
