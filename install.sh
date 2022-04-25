@@ -23,7 +23,7 @@ cmake -S . -B $BUILD_DIR -DCMAKE_BUILD_TYPE=Debug \
 make -C $BUILD_DIR
 
 if [[ $? -eq 0 ]]; then
-    make -C $BUILD_DIR install
+    sudo make -C $BUILD_DIR install
 fi
 
 if [[ $? -eq 0 && $RUNTESTS -eq 1 ]]; then
